@@ -1,10 +1,6 @@
 from Components.model import TransformerWithFeatures, EncoderWithFeatures, Encoder, DecoderBlock, Decoder, TransformerBlock
 import torch
 
-model = torch.load('C:/Users/godiv/Downloads/Pycode/Model.pt')
-model.generate()
-
-
 class PyCode:
 
 
@@ -19,7 +15,9 @@ class PyCode:
         try:
             self.model = torch.load('./Components/Model.pt', weights_only=True)
         except:
-            self.model = TransformerWithFeatures(num_layers=4, heads=8, )
+            self.model = TransformerWithFeatures()
+            state = torch.load('Components/model.pt', weights_only=True)
+            self.model = self.model.load_state_dict(state)
 
     def generate(self, input_text, method, **kwargs):
         """

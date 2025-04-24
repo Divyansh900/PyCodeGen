@@ -398,10 +398,12 @@ class Decoder(nn.Module):
 class TransformerWithFeatures(nn.Module):
     """Enhanced Transformer model that can use code features"""
 
-    def __init__(self, src_vocab_size, tgt_vocab_size, src_pad_idx=0, tgt_pad_idx=0,
+    def __init__(self, src_vocab_size=None, tgt_vocab_size=None, src_pad_idx=0, tgt_pad_idx=0,
                  embed_size=384, num_layers=4, fw_expansion=2, heads=8,
                  dropout=0.1, device='cuda', max_len=1000, num_features=0):
         super(TransformerWithFeatures, self).__init__()
+
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         # Use enhanced encoder if features are enabled
         if num_features > 0:
@@ -410,7 +412,7 @@ class TransformerWithFeatures(nn.Module):
                 embed_size=embed_size,
                 num_layers=num_layers,
                 heads=heads,
-                device=device,
+                device= self.device,
                 fw_expansion=fw_expansion,
                 dropout=dropout,
                 max_len=max_len,
@@ -422,7 +424,7 @@ class TransformerWithFeatures(nn.Module):
                 embed_size=embed_size,
                 num_layers=num_layers,
                 heads=heads,
-                device=device,
+                device= self.device,
                 fw_expansion=fw_expansion,
                 dropout=dropout,
                 max_len=max_len
@@ -435,13 +437,13 @@ class TransformerWithFeatures(nn.Module):
             heads=heads,
             fw_expansion=fw_expansion,
             dropout=dropout,
-            device=device,
+            device=self.device,
             max_len=max_len
         )
 
         self.src_pad_idx = src_pad_idx
         self.tgt_pad_idx = tgt_pad_idx
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
         self.use_features = num_features > 0
 
         # Setup vocab and preprocessing functions
