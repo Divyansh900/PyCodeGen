@@ -14,9 +14,9 @@ class PyCode:
                         Moke sure you have installed the packages from requirements.txt
 
                         Returns:
-                            Generated code as a string
+                            None
                         """
-        self.model = torch.load('C:/Users/godiv/Downloads/Pycode/Model.pt')
+        self.model = torch.load('./Components/Model.pt')
 
     def generate(self, input_text, method, **kwargs):
         """

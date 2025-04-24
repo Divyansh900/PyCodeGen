@@ -1,9 +1,7 @@
 import numpy as np
 import re
-import torch
 import json
 import pickle
-import pandas as pd
 import torch
 from torch import nn
 from collections import Counter
@@ -608,8 +606,8 @@ class TransformerWithFeatures(nn.Module):
             src_vocab_path: Path to source vocabulary file
             tgt_vocab_path: Path to target vocabulary file
         """
-        self.src_vocab = load_vocab(src_vocab_path)
-        self.tgt_vocab = load_vocab(tgt_vocab_path)
+        self.src_vocab = load_vocab('src_vocab.json')
+        self.tgt_vocab = load_vocab('tgt_vocab.json')
 
         # Create inverse mapping for decoding
         self.rev_tgt_vocab = {idx: tok for tok, idx in self.tgt_vocab.items()}
