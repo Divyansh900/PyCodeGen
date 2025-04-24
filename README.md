@@ -1,13 +1,15 @@
 # PyCodeGen
 
 ## Overview
-This repository contains a from‑scratch implementation of an encoder–decoder Transformer model in PyTorch, designed specifically for Python code generation tasks. The model was developed as my 3rd‑year (6th semester) solo project and features custom implementations of key Transformer components (multi‑head attention, positional encodings, layer normalization, etc.). Two size variants are provided:
+This repository contains a **from‑scratch** implementation of an encoder–decoder Transformer model in PyTorch, designed specifically for Python code generation tasks. The model was developed as my 3rd‑year (6th semester) solo project and features custom implementations of key Transformer components (multi‑head attention, positional encodings, layer normalization, etc.). Two size variants are provided:
 
-75M‑parameter variant (trained) for python code generation
+**75M‑parameter** variant (trained) for python code generation
 
 
 ## Requirements
-This project only requires **PyTorch** to be installed on the device and have a **GPU** (with Cuda), hence a single command `pip install torch==2.6.0` on the CLI.
+This project only requires **PyTorch** to be installed on the device and have a **GPU** (with Cuda), hence a single command on the CLI.
+
+    pip install torch
 
 However, we will also require kaggle for downloading the model so also install it using   
 `pip install kaggle`
@@ -24,19 +26,27 @@ A `kaggle.json` file will be downloaded, move this file into the following path 
 After this much has been done open the terminal in the cloned repo folder and make sure to do `cd Components`.
 
 To download the model run 
-    `#!/bin/bash kaggle models instances versions download divyanshvishwkarma/pycodegen/pyTorch/75m/2`
+    `#!/bin/bash kaggle models instances versions download divyanshvishwkarma/pycodegen/pyTorch/75m/3`
+
+This step can also be omitted by downloading the model by visiting : https://www.kaggle.com/models/divyanshvishwkarma/pycodegen
+Just click on download and then select '**Download model as .tar.gz**'
 
 A file named pycodegen.tar.gz will get installed.
 To extract it do `tar -xzvf pycodegen.tar.gz`
+
+
+
+
 
 make sure your directory structure looks like:
 
     PyCodeGen
         |->Components
-        |       |-> model.py
-        |       |-> Model.pt
-        |       |-> src_vocb.json
-        |       |-> tgt_vocab.json
+        |   |-> model.py
+        |   |-> model.pt
+        |   |-> Model.pt
+        |   |-> src_vocb.json
+        |   |-> tgt_vocab.json
         |
         |->Model.py
         |
@@ -49,3 +59,6 @@ Now you are all set to run your the model
     prompt = ' ...Your code prompt...  '
     model.generate(prompt)
 
+
+for more information about the model visit : https://www.kaggle.com/models/divyanshvishwkarma/pycodegen
+for more information on downloading models from kaggle visit : https://www.kaggle.com/docs/models#kagglehub-download

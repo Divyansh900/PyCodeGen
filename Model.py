@@ -16,7 +16,10 @@ class PyCode:
                         Returns:
                             None
                         """
-        self.model = torch.load('./Components/Model.pt')
+        try:
+            self.model = torch.load('./Components/Model.pt', weights_only=True)
+        except:
+            self.model = TransformerWithFeatures(num_layers=4, heads=8, )
 
     def generate(self, input_text, method, **kwargs):
         """

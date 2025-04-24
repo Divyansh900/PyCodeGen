@@ -1,12 +1,8 @@
-import numpy as np
 import re
 import json
 import pickle
 import torch
 from torch import nn
-from collections import Counter
-from torch.nn.utils.rnn import pad_sequence
-from typing import List, Dict, Union, Optional, Tuple
 
 
 def extract_code_features(text):
@@ -402,9 +398,9 @@ class Decoder(nn.Module):
 class TransformerWithFeatures(nn.Module):
     """Enhanced Transformer model that can use code features"""
 
-    def __init__(self, src_vocab_size, tgt_vocab_size, src_pad_idx, tgt_pad_idx,
-                 embed_size=256, num_layers=2, fw_expansion=4, heads=8,
-                 dropout=0.1, device='cuda', max_len=100, num_features=0):
+    def __init__(self, src_vocab_size, tgt_vocab_size, src_pad_idx=0, tgt_pad_idx=0,
+                 embed_size=384, num_layers=4, fw_expansion=2, heads=8,
+                 dropout=0.1, device='cuda', max_len=1000, num_features=0):
         super(TransformerWithFeatures, self).__init__()
 
         # Use enhanced encoder if features are enabled
@@ -606,8 +602,11 @@ class TransformerWithFeatures(nn.Module):
             src_vocab_path: Path to source vocabulary file
             tgt_vocab_path: Path to target vocabulary file
         """
-        self.src_vocab = load_vocab('src_vocab.json')
-        self.tgt_vocab = load_vocab('tgt_vocab.json')
+        try:
+            self.src_vocab = load_vocab('src_vocab.json')
+            self.tgt_vocab = load_vocab('tgt_vocab.json')
+        except:
+            raise FileNotFoundError('Vocabulary not found, nake sure "src_vocab.json" adn "tgt_vocab.json" are present in the Components directory')
 
         # Create inverse mapping for decoding
         self.rev_tgt_vocab = {idx: tok for tok, idx in self.tgt_vocab.items()}
