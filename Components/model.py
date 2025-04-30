@@ -1090,7 +1090,6 @@ class PyCode:
                         - For greedy: max_gen_len (default=512)
                         - For beam_search: beam_width (default=5), max_gen_len (default=512), length_penalty (default=1.0)
                         - For sampling: max_gen_len (default=512), temperature (default=0.8), top_p (default=0.9)
-
                 Returns:
                     Generated code as a string
                 """
