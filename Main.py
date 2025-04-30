@@ -1,5 +1,5 @@
 import streamlit as st
-from Model import PyCode
+from Components import model
 
 # App title
 st.title(":green[Py]CodeGen")
@@ -7,7 +7,7 @@ st.title(":green[Py]CodeGen")
 # Initialize the model only once using st.session_state
 if 'model' not in st.session_state:
     with st.spinner('Initializing model... Please wait.'):
-        st.session_state.model = PyCode()
+        st.session_state.model = model.PyCode()
     st.success('Model initialized successfully!')
 
 # Input box for user prompts
