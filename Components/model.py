@@ -1080,7 +1080,7 @@ class PyCode:
             # self.model = TransformerWithFeatures(src_vocab_size= 18080, tgt_vocab_size=72366, embed_size=384,num_layers=4,heads=8,dropout=0.1, num_features = 6).to(torch.device('cuda'))
             # state = torch.load('Components/Model.pt', weights_only=False)
             # self.model = self.model.load_state_dict(state)
-            self.model = TransformerWithFeatures.from_pretrained(model_path=os.path.join(os.getcwd(),'model_weights.pt'), src_vocab_path='./src_vocab.json', tgt_vocab_path='./tgt_vocab.json', device='cuda')
+            self.model = TransformerWithFeatures.from_pretrained(model_path=os.path.join(os.getcwd(),'Components','model_weights.pt'), src_vocab_path='./src_vocab.json', tgt_vocab_path='./tgt_vocab.json', device='cuda')
 
     def generate(self, input_text, method, **kwargs):
         """
