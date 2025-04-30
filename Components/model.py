@@ -3,6 +3,7 @@ import json
 import pickle
 import torch
 from torch import nn
+import os
 
 
 def extract_code_features(text):
@@ -605,12 +606,12 @@ class TransformerWithFeatures(nn.Module):
             tgt_vocab_path: Path to target vocabulary file
         """
         try:
-            self.src_vocab = load_vocab(os.path.join(os.getcwd(),'src_vocab.json'))
-            self.tgt_vocab = load_vocab(os.path.join(os.getcwd(),'tgt_vocab.json'))
+            self.src_vocab = load_vocab(os.path.join(os.getcwd(), 'src_vocab.json'))
+            self.tgt_vocab = load_vocab(os.path.join(os.getcwd(), 'tgt_vocab.json'))
         except:
             # raise FileNotFoundError('Vocabulary not found, nake sure "src_vocab.json" adn "tgt_vocab.json" are present in the Components directory')
-            self.src_vocab = load_vocab(os.path.join(os.getcwd(),'Components', 'src_vocab.json'))
-            self.tgt_vocab = load_vocab(os.path.join(os.getcwd(),'Components', 'tgt_vocab.json'))
+            self.src_vocab = load_vocab(os.path.join(os.getcwd(), 'Components', 'src_vocab.json'))
+            self.tgt_vocab = load_vocab(os.path.join(os.getcwd(), 'Components', 'tgt_vocab.json'))
 
 
         # Create inverse mapping for decoding
