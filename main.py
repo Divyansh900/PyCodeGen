@@ -24,7 +24,6 @@ if st.button('Generate Code'):
         # Display the generated code
         st.subheader("Generated Code:")
         st.code(generated_code)
-        st.write(generated_code)
     else:
         st.warning('Please enter a prompt first.')
 
