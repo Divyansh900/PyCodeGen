@@ -48,7 +48,7 @@ make sure your directory structure looks like:
     PyCodeGen
         |->Components
         |   |-> model.py
-        |   |-> model.pt
+        |   |-> model_weights.pt
         |   |-> Model.pt
         |   |-> src_vocb.json
         |   |-> tgt_vocab.json

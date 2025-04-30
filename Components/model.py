@@ -3,7 +3,6 @@ import json
 import pickle
 import torch
 from torch import nn
-import os
 
 
 def extract_code_features(text):
@@ -404,7 +403,7 @@ class TransformerWithFeatures(nn.Module):
                  dropout=0.1, device=torch.device('cuda'), max_len=1000, num_features=0):
         super(TransformerWithFeatures, self).__init__()
 
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.device = torch.device('cuda')
 
         # Use enhanced encoder if features are enabled
         if num_features > 0:
@@ -606,12 +605,13 @@ class TransformerWithFeatures(nn.Module):
             tgt_vocab_path: Path to target vocabulary file
         """
         try:
-            self.src_vocab = load_vocab(os.path.join(os.getcwd(), 'src_vocab.json'))
-            self.tgt_vocab = load_vocab(os.path.join(os.getcwd(), 'tgt_vocab.json'))
+            self.src_vocab = load_vocab(os.path.join(os.getcwd(),'src_vocab.json'))
+            self.tgt_vocab = load_vocab(os.path.join(os.getcwd(),'tgt_vocab.json'))
         except:
             # raise FileNotFoundError('Vocabulary not found, nake sure "src_vocab.json" adn "tgt_vocab.json" are present in the Components directory')
-            self.src_vocab = load_vocab(os.path.join(os.getcwd(), 'Components', 'src_vocab.json'))
-            self.tgt_vocab = load_vocab(os.path.join(os.getcwd(), 'Components', 'tgt_vocab.json'))
+            self.src_vocab = load_vocab(os.path.join(os.getcwd(),'Components', 'src_vocab.json'))
+            self.tgt_vocab = load_vocab(os.path.join(os.getcwd(),'Components', 'tgt_vocab.json'))
+
 
         # Create inverse mapping for decoding
         self.rev_tgt_vocab = {idx: tok for tok, idx in self.tgt_vocab.items()}
@@ -765,14 +765,15 @@ class TransformerWithFeatures(nn.Module):
         self.eval()  # Ensure model is in evaluation mode
 
         src_tensor, feat_tensor = self.preprocess_input(input_text)
-
+        src_tensor = src_tensor.to(self.device)
+        feat_tensor = feat_tensor.to(self.device)
         # Prepare decoder input with <sos>
         output_indices = [self.sos_idx]
 
         # Greedy decoding loop
         with torch.no_grad():
             for _ in range(max_gen_len):
-                tgt_tensor = torch.tensor([output_indices], dtype=torch.long, device=self.device)
+                tgt_tensor = torch.tensor([output_indices], dtype=torch.long).to(self.device)
 
                 # Forward pass through model
                 if self.include_features:
@@ -1041,13 +1042,13 @@ class TransformerWithFeatures(nn.Module):
             # Create a new model instance
             # Note: We'll need to infer parameters from the state_dict
             model = cls(
-                src_vocab_size=state_dict['encoder.tok_embedding.weight'].shape[0],
-                tgt_vocab_size=state_dict['decoder.tok_embedding.weight'].shape[0],
+                src_vocab_size=18082,
+                tgt_vocab_size=72373,
                 src_pad_idx=0,  # Default, will be overridden by vocab loading
                 tgt_pad_idx=0,  # Default, will be overridden by vocab loading
-                embed_size=state_dict['encoder.tok_embedding.weight'].shape[1],
+                embed_size=384,
                 device= torch.device('cuda' if torch.cuda.is_available() else 'cpu'),
-                num_features=model_info.get('num_features', 0)
+                num_features=6
             )
 
             # Load the weights
@@ -1057,6 +1058,7 @@ class TransformerWithFeatures(nn.Module):
             model.init_vocab(src_vocab_path, tgt_vocab_path)
 
             model.eval()
+            model = model.to(device)
             return model
         except Exception as e:
             raise ValueError(f"Failed to load model: {str(e)}")
@@ -1090,7 +1092,8 @@ class PyCode:
                         - For greedy: max_gen_len (default=512)
                         - For beam_search: beam_width (default=5), max_gen_len (default=512), length_penalty (default=1.0)
                         - For sampling: max_gen_len (default=512), temperature (default=0.8), top_p (default=0.9)
+
                 Returns:
                     Generated code as a string
                 """
-        print(self.model.generate(input_text, method = 'greedy', **kwargs))
+        return self.model.generate(input_text, method = 'greedy', **kwargs)
