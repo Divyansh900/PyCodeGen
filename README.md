@@ -9,9 +9,10 @@ This is a **75M**‑parameter **encoder-decoder** transformer model for python c
 
 
 ## Requirements
-This project only requires **PyTorch** to be installed on the device and have a **GPU** (with Cuda), hence a single command on the CLI.
+This project only requires **PyTorch** to be installed on the device and have a **GPU** (with Cuda), also install streamlit for the GUI.
 
     pip install torch
+    pip install streamlit
 
 However, we will also require kaggle for downloading the model so also install it using   
 `pip install kaggle`
