@@ -19,11 +19,12 @@ user_prompt = st.text_area("Enter your prompt",
 if st.button('Generate Code'):
     if user_prompt:
         with st.spinner('Generating code...'):
-            generated_code = st.session_state.model.generate(user_prompt)
+            generated_code = st.session_state.model.generate(user_prompt, method = 'greedy')
 
         # Display the generated code
         st.subheader("Generated Code:")
         st.code(generated_code)
+        st.write(generated_code)
     else:
         st.warning('Please enter a prompt first.')
 

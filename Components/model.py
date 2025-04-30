@@ -3,6 +3,7 @@ import json
 import pickle
 import torch
 from torch import nn
+import os
 
 
 def extract_code_features(text):
@@ -605,10 +606,12 @@ class TransformerWithFeatures(nn.Module):
             tgt_vocab_path: Path to target vocabulary file
         """
         try:
-            self.src_vocab = load_vocab('src_vocab.json')
-            self.tgt_vocab = load_vocab('tgt_vocab.json')
+            self.src_vocab = load_vocab(os.path.join(os.getcwd(), 'src_vocab.json'))
+            self.tgt_vocab = load_vocab(os.path.join(os.getcwd(), 'tgt_vocab.json'))
         except:
-            raise FileNotFoundError('Vocabulary not found, nake sure "src_vocab.json" adn "tgt_vocab.json" are present in the Components directory')
+            # raise FileNotFoundError('Vocabulary not found, nake sure "src_vocab.json" adn "tgt_vocab.json" are present in the Components directory')
+            self.src_vocab = load_vocab(os.path.join(os.getcwd(), 'Components', 'src_vocab.json'))
+            self.tgt_vocab = load_vocab(os.path.join(os.getcwd(), 'Components', 'tgt_vocab.json'))
 
         # Create inverse mapping for decoding
         self.rev_tgt_vocab = {idx: tok for tok, idx in self.tgt_vocab.items()}
@@ -687,27 +690,53 @@ class TransformerWithFeatures(nn.Module):
         # Join tokens with proper formatting for code
         text = ' '.join(tokens)
 
-        # Restore escape sequences
-        text = text.replace(' NEWLINE_TOKEN ', '\n')
-        text = text.replace(' TAB_TOKEN ', '\t')
-        text = text.replace(' RETURN_TOKEN ', '\r')
-        text = text.replace(' ESCAPED_NEWLINE_TOKEN ', '\\n')
-        text = text.replace(' ESCAPED_TAB_TOKEN ', '\\t')
-        text = text.replace(' ESCAPED_RETURN_TOKEN ', '\\r')
-        text = text.replace(' BACKSLASH_TOKEN ', '\\\\')
-        text = text.replace(' DOUBLEQUOTE_TOKEN ', '\\"')
-        text = text.replace(' SINGLEQUOTE_TOKEN ', "\\'")
+        # Map only the specific tokens from the original function
+        token_replacements = {
+            ' NEWLINE_TOKEN ': '\n',
+            ' TAB_TOKEN ': '\t',
+            ' RETURN_TOKEN ': '\r',
+            ' ESCAPED_NEWLINE_TOKEN ': '\\n',
+            ' ESCAPED_TAB_TOKEN ': '\\t',
+            ' ESCAPED_RETURN_TOKEN ': '\\r',
+            ' BACKSLASH_TOKEN ': '\\\\',
+            ' DOUBLEQUOTE_TOKEN ': '\\"',
+            ' SINGLEQUOTE_TOKEN ': "\\'"
+        }
+
+        # Replace all specified tokens with proper spacing
+        for token, replacement in token_replacements.items():
+            text = text.replace(token, replacement)
+
+        # Also handle tokens without spaces around them
+        text = text.replace('NEWLINE_TOKEN', '\n')
+        text = text.replace('TAB_TOKEN', '\t')
+        text = text.replace('RETURN_TOKEN', '\r')
+        text = text.replace('ESCAPED_NEWLINE_TOKEN', '\\n')
+        text = text.replace('ESCAPED_TAB_TOKEN', '\\t')
+        text = text.replace('ESCAPED_RETURN_TOKEN', '\\r')
+        text = text.replace('BACKSLASH_TOKEN', '\\\\')
+        text = text.replace('DOUBLEQUOTE_TOKEN', '\\"')
+        text = text.replace('SINGLEQUOTE_TOKEN', "\\'")
 
         # Basic code formatting - adjust punctuation spacing
         for punct in ',.(){}[]+-*/=<>:;':
             text = text.replace(f' {punct} ', punct)
             text = text.replace(f' {punct}', punct)
+            # Also handle the case where punct is at the beginning of the text
+            text = text.replace(f'{punct} ', punct)
 
         # Fix spacing for common operators
+        operators = ['+=', '-=', '*=', '/=', '==', '!=', '<=', '>=', '=>', '->', '++', '--']
+        for op in operators:
+            # Handle operators that might be tokenized with spaces between characters
+            text = text.replace(' '.join(op), op)
+
+        # Fix spacing for common operators as in the original function
         for op in ['+=', '-=', '*=', '/=', '==', '!=', '<=', '>=', '=>', '->']:
             text = text.replace(' '.join(op), op)
 
         # Restore array references
+        import re
         array_pattern = r'<array:(\w+)>'
         text = re.sub(array_pattern, r'\1', text)
 
@@ -1034,8 +1063,6 @@ class TransformerWithFeatures(nn.Module):
 
 
 class PyCode:
-
-
     def __init__(self):
         """
                         Initialize the model and load vocabulary
@@ -1045,11 +1072,12 @@ class PyCode:
                             None
                         """
         try:
-            self.model = torch.load('./Components/Model.pt', weights_only=True)
+            self.model = TransformerWithFeatures.from_pretrained(model_path='./Model.pt', src_vocab_path='./src_vocab.json', tgt_vocab_path='./tgt_vocab.json', device='cuda')
         except:
-            self.model = TransformerWithFeatures(src_vocab_size= 18080, tgt_vocab_size=72366, embed_size=384,num_layers=4,heads=8,dropout=0.1, num_features = 6).to(torch.device('cuda'))
-            state = torch.load('Components/model.pt', weights_only=True)
-            self.model = self.model.load_state_dict(state)
+            # self.model = TransformerWithFeatures(src_vocab_size= 18080, tgt_vocab_size=72366, embed_size=384,num_layers=4,heads=8,dropout=0.1, num_features = 6).to(torch.device('cuda'))
+            # state = torch.load('Components/Model.pt', weights_only=False)
+            # self.model = self.model.load_state_dict(state)
+            self.model = TransformerWithFeatures.from_pretrained(model_path=os.path.join(os.getcwd(),'model_weights.pt'), src_vocab_path='./src_vocab.json', tgt_vocab_path='./tgt_vocab.json', device='cuda')
 
     def generate(self, input_text, method, **kwargs):
         """
@@ -1066,4 +1094,4 @@ class PyCode:
                 Returns:
                     Generated code as a string
                 """
-        print(self.model.generate(input_text, method = method, **kwargs))
+        print(self.model.generate(input_text, method = 'greedy', **kwargs))
