@@ -29,12 +29,14 @@ After this much has been done open the terminal in the cloned repo folder and ma
 
 To download the model run 
     `#!/bin/bash kaggle models instances versions download divyanshvishwkarma/pycodegen/pyTorch/75m/3`
+A file named pycodegen.tar.gz will get installed.
+
 
 This step can also be omitted by downloading the model by visiting the [model page](https://www.kaggle.com/models/divyanshvishwkarma/pycodegen)
-Just click on download and then select '**Download model as .tar.gz**'
+Just click on download and then select '**Download model as .tar.gz**'. Make sure to move this file in the Components directory.
 
-A file named pycodegen.tar.gz will get installed.
-To extract it do `tar -xzvf pycodegen.tar.gz`
+With command prompt open in the Components directory run
+ `tar -xzvf pycodegen.tar.gz` and the model weights will be extracted in the directory
 
 
 ## Directory structure
