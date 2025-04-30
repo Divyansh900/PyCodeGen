@@ -15,7 +15,7 @@ class PyCode:
         try:
             self.model = torch.load('./Components/Model.pt', weights_only=True)
         except:
-            self.model = TransformerWithFeatures()
+            self.model = TransformerWithFeatures(src_vocab_size= 18080, tgt_vocab_size=72366, embed_size=384,num_layers=4,heads=8,dropout=0.1, num_features = 6).to(torch.device('cuda'))
             state = torch.load('Components/model.pt', weights_only=True)
             self.model = self.model.load_state_dict(state)
 
@@ -34,5 +34,5 @@ class PyCode:
                 Returns:
                     Generated code as a string
                 """
-        print(model.generate(input_text, method = method, **kwargs))
+        print(self.model.generate(input_text, method = method, **kwargs))
 

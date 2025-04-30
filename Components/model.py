@@ -400,7 +400,7 @@ class TransformerWithFeatures(nn.Module):
 
     def __init__(self, src_vocab_size=None, tgt_vocab_size=None, src_pad_idx=0, tgt_pad_idx=0,
                  embed_size=384, num_layers=4, fw_expansion=2, heads=8,
-                 dropout=0.1, device='cuda', max_len=1000, num_features=0):
+                 dropout=0.1, device=torch.device('cuda'), max_len=1000, num_features=0):
         super(TransformerWithFeatures, self).__init__()
 
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
