@@ -29,7 +29,7 @@ A `kaggle.json` file will be downloaded, move this file into the following path 
 After this much has been done open the terminal in the cloned repo folder and make sure to do `cd Components`.
 
 To download the model run 
-    `#!/bin/bash kaggle models instances versions download divyanshvishwkarma/pycodegen/pyTorch/75m/3`
+    `#!/bin/bash kaggle models instances versions download divyanshvishwkarma/pycodegen/pyTorch/75m/5`
 A file named pycodegen.tar.gz will get installed.
 
 
@@ -55,19 +55,16 @@ make sure your directory structure looks like:
         |
         |->Model.py
         |
-        |->Main.py
+        |->main.py
 
 
 ## Inference
 
 Now you are all set to run your the model:
 
--> Main.py
+Run this command at the terminal with the project directory open
 
-    from Model import PyCode
-    model = PyCode()
-    prompt = ' ...Your code prompt...  '
-    model.generate(prompt)
+    -> streamlit run main.py
 
 
 ### Dataset
