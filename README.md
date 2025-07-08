@@ -74,6 +74,7 @@ by Tarun Bisht, consisting on 18.6 thousand python code examples.
 ### Future plans
 
 I am planning to expand this model to larger parameter size and a larger dataset as well, so be on a lookout for it.
+Version 0.1 is in development trained, made efficient and trained over a much larger dataset.
 
 
 
