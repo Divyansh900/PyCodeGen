@@ -7,7 +7,7 @@ import os
 
 
 def extract_code_features(text):
-    """Extract additional features from code text with consistent output structure"""
+    """Will be removed in the next update."""
     # Define all possible features
     all_features = {
         'has_loops': False,
@@ -16,10 +16,9 @@ def extract_code_features(text):
         'has_classes': False,
         'array_operations': False,
         'math_operations': False
-        # Add any other features your model should use
     }
 
-    # Set feature values based on text content
+   
     all_features['has_loops'] = 'for' in text or 'while' in text
     all_features['has_conditionals'] = 'if' in text or 'else' in text
     all_features['has_functions'] = 'def' in text
@@ -27,7 +26,7 @@ def extract_code_features(text):
     all_features['array_operations'] = bool(re.search(r'\w+\s*\[\s*\w+\s*\]', text))
     all_features['math_operations'] = any(op in text for op in ['+', '-', '*', '/', '%'])
 
-    # Convert boolean values to 0/1 for use in models
+   
     return {k: int(v) for k, v in all_features.items()}
 
 
